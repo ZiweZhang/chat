@@ -1,27 +1,30 @@
 const express = require('express');
 const socket = require('socket.io');
 
-// app setup
+// App setup
 const app = express();
 const server = app.listen(665, function () {
-    console.log('Listening to requests on port 665')
+    console.log('listening for requests on port 665,');
 });
 
-//static files
+// Static files
 app.use(express.static('public'));
 
-// Socket setup
+// Socket setup & pass server
 const io = socket(server);
+io.on('connection', (socket) => {
 
-io.on('connection', function (socket) {
     console.log('made socket connection', socket.id);
 
-    socket.on('chat', function (data) {
+    // Handle chat event
+    socket.on('chat', function(data){
+        // console.log(data);
         io.sockets.emit('chat', data);
-    })
+    });
 
-    socket.on('typing', function (data) {
+    // Handle typing event
+    socket.on('typing', function(data){
         socket.broadcast.emit('typing', data);
-    })
-});
+    });
 
+});

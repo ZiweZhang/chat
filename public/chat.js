@@ -1,32 +1,32 @@
-//make connecrtion
+// Make connection
 const socket = io.connect('http://localhost:665');
 
 // Query DOM
 const message = document.getElementById('message'),
-    handle = document.getElementById('handle'),
+    name = document.getElementById('name'),
     btn = document.getElementById('send'),
     output = document.getElementById('output'),
     feedback = document.getElementById('feedback');
 
-// emit events
-
+// Emit events
 btn.addEventListener('click', function () {
     socket.emit('chat', {
         message: message.value,
-        handle: handle.value
-    })
+        name: name.value
+    });
+    message.value = "";
 });
 
 message.addEventListener('keypress', function () {
-socket.emit('typing', handle.value);
+    socket.emit('typing', name.value);
 })
 
-//listen for events
+// Listen for events
 socket.on('chat', function (data) {
-    feedback.innerHTML = "";
-    output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>'
-})
+    feedback.innerHTML = '';
+    output.innerHTML += '<p><strong>' + data.name + ': </strong>' + data.message + '</p>';
+});
 
 socket.on('typing', function (data) {
-    feedback.innerHTML = '<p><em>' + data + ' is typing a message... </em></p>';
+    feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
 });
